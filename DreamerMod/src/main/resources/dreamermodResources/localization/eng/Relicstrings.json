@@ -1,0 +1,9 @@
+{
+  "${ModID}:DreamerItem": {
+    "NAME": "Dreamer Item",
+    "FLAVOR": "DREAMER: make this a sweet relic.",
+    "DESCRIPTIONS": [
+      "At the start of each combat, Dream."
+    ]
+  }
+}

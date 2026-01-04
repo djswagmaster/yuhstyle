@@ -1,0 +1,60 @@
+[
+  {
+    "PROPER_NAME": "DREAMER",
+    "NAMES": [
+      "dreamer",
+      "dreamers"
+    ],
+    "DESCRIPTION": "DREAMER: Make your own epic keywords"
+  },
+  {
+    "PROPER_NAME": "Dream",
+    "NAMES": [
+      "dream",
+      "dreamt",
+      "dreamed"
+    ],
+    "DESCRIPTION": "Choose a card from your hand to put into your Dream Slot. The card is returned to your hand when you Dream again.",
+    "COLOR": "7195c3"
+  },
+  {
+    "PROPER_NAME": "Manifest",
+    "NAMES": [
+      "manifest",
+      "manifested",
+      "manifesting"
+    ],
+    "DESCRIPTION": "Reduce the cost of your Dream card. When the cost reaches 0, the card is played automatically.",
+    "COLOR": "ec4598"
+  },
+  {
+    "PROPER_NAME": "Modifiers",
+    "NAMES": [
+      "modifier",
+      "modifiers"
+    ],
+    "DESCRIPTION": "Ethereal, Exhaust, Innate, Retain, Dreambound, etc. are all Modifiers."
+  },
+  {
+    "PROPER_NAME": "Dreambound",
+    "NAMES": [
+      "dreambound"
+    ],
+    "DESCRIPTION": "This card's Dream cost is reduced by 1."
+  },
+  {
+    "PROPER_NAME": "Deadly",
+    "NAMES": [
+      "deadly"
+    ],
+    "DESCRIPTION": "Deals double damage.",
+    "COLOR": "F54927"
+  },
+  {
+    "PROPER_NAME": "Durable",
+    "NAMES": [
+      "durable"
+    ],
+    "DESCRIPTION": "Gain 3 Block upon playing this card."
+  }
+]
