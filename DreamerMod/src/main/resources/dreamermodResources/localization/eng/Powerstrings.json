@@ -10,8 +10,124 @@
   "${ModID}:DreamWeaverPower": {
     "NAME": "Dream Weaver",
     "DESCRIPTIONS": [
-      "At the start of your turn, #yManifest ",
+      "At the end of your turn, #yManifest ",
       "."
+    ]
+  },
+  "${ModID}:DozeOffPower": {
+    "NAME": "Doze Off",
+    "DESCRIPTIONS": [
+      "At the start of your turn, #yDream."
+    ]
+  },
+  "${ModID}:LucidityPower": {
+    "NAME": "Lucidity",
+    "DESCRIPTIONS": [
+      "Whenever you #yDream, gain #b",
+      " Strength and Dexterity."
+    ]
+  },
+  "${ModID}:GrowingNightmarePower": {
+    "NAME": "Growing Nightmare",
+    "DESCRIPTIONS": [
+      "At the end of your turn, deal #b",
+      " damage to ALL enemies, then double this damage."
+    ]
+  },
+  "${ModID}:FatiguePower": {
+    "NAME": "Fatigue",
+    "DESCRIPTIONS": [
+      "#b",
+      ". NL Doubles each turn. Upon reaching max stacks, this enemy becomes Stunned for the turn."
+    ]
+  },
+  "${ModID}:DreamShieldPower": {
+    "NAME": "Dream Shield",
+    "DESCRIPTIONS": [
+      "Whenever you #yManifest a card, gain #b",
+      " Block."
+    ]
+  },
+  "${ModID}:DrowsyPower": {
+    "NAME": "Drowsy",
+    "DESCRIPTIONS": [
+      "At #b",
+      " stacks, becomes Stunned for a turn."
+    ]
+  },
+  "${ModID}:DreamDrawPower": {
+    "NAME": "Dream Draw",
+    "DESCRIPTIONS": [
+      "Whenever you #yDream, draw #b",
+      " cards."
+    ]
+  },
+  "${ModID}:ModifierStrikePower": {
+    "NAME": "Modifier Mastery",
+    "DESCRIPTIONS": [
+      "Whenever you play a card with a #yModifier, deal #b",
+      " damage to a random enemy."
+    ]
+  },
+  "${ModID}:LunarFormPower": {
+    "NAME": "Lunar Form",
+    "DESCRIPTIONS": [
+      "At the start of each turn, gain #b",
+      " [E] . Whenever you draw a card, it becomes #yEthereal."
+    ]
+  },
+  "${ModID}:FesterPower": {
+    "NAME": "Festering",
+    "DESCRIPTIONS": [
+      "Loses #b",
+      " HP whenever you play Fester."
+    ]
+  },
+  "${ModID}:BacktrackPower": {
+    "NAME": "Backtrack",
+    "DESCRIPTIONS": [
+      "At the end of your turn, shuffle up to #b",
+      " card from your discard pile into your draw pile.",
+      "Choose cards to shuffle into your draw pile.",
+      " cards from your discard pile into your draw pile."
+    ]
+  },
+  "${ModID}:PermanencePower": {
+    "NAME": "Permanence",
+    "DESCRIPTIONS": [
+      "The next #b",
+      " time you Manifest a Power or Exhaust card, it remains in your Dream slot.",
+      " times you Manifest a Power or Exhaust card, it remains in your Dream slot."
+    ]
+  },
+  "${ModID}:DeepConnectionPower": {
+    "NAME": "Deep Connection",
+    "DESCRIPTIONS": [
+      "#yDreambound now reduces #yDream cost by #b2 instead of 1."
+    ]
+  },
+  "${ModID}:FortifiedDreamPower": {
+    "NAME": "Fortified Dream",
+    "DESCRIPTIONS": [
+      "Block from all sources is doubled this turn.",
+      "Block from all sources is doubled for #b",
+      " turns."
+    ]
+  },
+  "${ModID}:LucidDreamerPower": {
+    "NAME": "Lucid Dreamer",
+    "DESCRIPTIONS": [
+      "The first time you fully #yManifest a card each turn, #yDream.",
+      "The first #b",
+      " times you fully #yManifest a card each turn, #yDream."
+    ]
+  },
+  "${ModID}:FortifyPower": {
+    "NAME": "Fortify",
+    "DESCRIPTIONS": [
+      "At the start of your turn, add #yDurable to a random card in your hand.",
+      "At the start of your turn, add #yDurable to #b",
+      " random cards in your hand."
     ]
   }
 }

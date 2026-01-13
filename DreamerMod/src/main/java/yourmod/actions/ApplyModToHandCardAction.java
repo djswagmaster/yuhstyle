@@ -4,7 +4,6 @@ import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
@@ -16,19 +15,14 @@ import java.util.ArrayList;
  */
 public class ApplyModToHandCardAction extends AbstractGameAction {
 
-    private static final String TEXT = "Choose a card to enhance.";
+    private static final String TEXT = "enhance.";
     private AbstractCardModifier modifier;
     private String modifierIdentifier;
-    private boolean canCancel;
+    private boolean pickedCard = false;
 
     public ApplyModToHandCardAction(AbstractCardModifier modifier, String modifierIdentifier) {
-        this(modifier, modifierIdentifier, true);
-    }
-
-    public ApplyModToHandCardAction(AbstractCardModifier modifier, String modifierIdentifier, boolean canCancel) {
         this.modifier = modifier;
         this.modifierIdentifier = modifierIdentifier;
-        this.canCancel = canCancel;
         this.actionType = ActionType.CARD_MANIPULATION;
         this.duration = Settings.ACTION_DUR_FAST;
     }
@@ -36,10 +30,15 @@ public class ApplyModToHandCardAction extends AbstractGameAction {
     @Override
     public void update() {
         if (this.duration == Settings.ACTION_DUR_FAST) {
+            // Check if hand is empty
+            if (AbstractDungeon.player.hand.isEmpty()) {
+                this.isDone = true;
+                return;
+            }
+
             // Get all cards in hand that don't already have this modifier
             ArrayList<AbstractCard> validCards = new ArrayList<>();
             for (AbstractCard card : AbstractDungeon.player.hand.group) {
-                // Check if card already has this modifier
                 if (!CardModifierManager.hasModifier(card, modifierIdentifier)) {
                     validCards.add(card);
                 }
@@ -51,48 +50,46 @@ public class ApplyModToHandCardAction extends AbstractGameAction {
                 return;
             }
 
-            // If only one valid card and can't cancel, auto-select it
-            if (validCards.size() == 1 && !canCancel) {
-                CardModifierManager.addModifier(validCards.get(0), modifier.makeCopy());
-                this.isDone = true;
-                return;
+            // Make valid cards glow
+            for (AbstractCard card : AbstractDungeon.player.hand.group) {
+                if (validCards.contains(card)) {
+                    card.beginGlowing();
+                } else {
+                    card.stopGlowing();
+                }
             }
 
-            // Create a temporary card group with only valid cards
-            CardGroup tempGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-            for (AbstractCard card : validCards) {
-                tempGroup.addToTop(card);
-            }
-
-            // Open card selection screen
-            AbstractDungeon.gridSelectScreen.open(
-                    tempGroup,
-                    1,
-                    TEXT,
-                    false,
-                    false,
-                    canCancel,
-                    false
-            );
-
+            this.pickedCard = true;
+            AbstractDungeon.handCardSelectScreen.open(TEXT, 1, true, true);
             tickDuration();
             return;
         }
 
-        // Check if a card was selected
-        if (!AbstractDungeon.gridSelectScreen.selectedCards.isEmpty()) {
-            AbstractCard selectedCard = AbstractDungeon.gridSelectScreen.selectedCards.get(0);
+        if (this.pickedCard) {
+            if (!AbstractDungeon.handCardSelectScreen.wereCardsRetrieved) {
+                // Stop all cards from glowing
+                for (AbstractCard card : AbstractDungeon.player.hand.group) {
+                    card.stopGlowing();
+                }
 
-            // Apply the modifier to the selected card (make a copy to avoid sharing)
-            CardModifierManager.addModifier(selectedCard, modifier.makeCopy());
+                if (!AbstractDungeon.handCardSelectScreen.selectedCards.group.isEmpty()) {
+                    AbstractCard selectedCard = AbstractDungeon.handCardSelectScreen.selectedCards.group.get(0);
 
-            // Clear the selection
-            AbstractDungeon.gridSelectScreen.selectedCards.clear();
-        }
+                    // Only apply if it doesn't already have the modifier
+                    if (!CardModifierManager.hasModifier(selectedCard, modifierIdentifier)) {
+                        CardModifierManager.addModifier(selectedCard, modifier.makeCopy());
+                        selectedCard.superFlash();
+                    }
 
-        // Close the grid if it's still open
-        if (AbstractDungeon.gridSelectScreen.targetGroup.size() > 0) {
-            AbstractDungeon.gridSelectScreen.targetGroup.clear();
+                    // Return the card to hand
+                    AbstractDungeon.player.hand.addToTop(selectedCard);
+                }
+
+                AbstractDungeon.handCardSelectScreen.wereCardsRetrieved = true;
+                AbstractDungeon.handCardSelectScreen.selectedCards.group.clear();
+                this.isDone = true;
+                return;
+            }
         }
 
         tickDuration();

@@ -2,20 +2,36 @@ package yourmod.dream;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.PrismaticShard;
 import yourmod.CharacterFile;
+import yourmod.powers.DeepConnectionPower;
+import yourmod.powers.DreamDrawPower;
+import yourmod.powers.DreamShieldPower;
+import yourmod.powers.LucidDreamerPower;
+import yourmod.powers.LucidityPower;
+import yourmod.powers.PermanencePower;
+import yourmod.ui.DreamSlotPanel;
+
+import java.util.ArrayList;
 
 public class DreamManager {
     private static DreamManager instance;
 
     // Dream slot state
-    private AbstractCard cardInSlot;
+    // The actual card is stored in DreamSlotPanel.dreamPile
+    private int originalBaseCost; // Store the original cost when inspired (immune to Snecko)
     private int costPenalty;
     private int timesPlayed;
     private int timesDreamed;
 
+    // Pending modifiers for card rewards
+    private ArrayList<basemod.abstracts.AbstractCardModifier> pendingRewardModifiers = new ArrayList<>();
+    private int pendingRandomModifiers = 0;
+
     private DreamManager() {
-        this.cardInSlot = null;
+        this.originalBaseCost = 0;
         this.costPenalty = 0;
         this.timesPlayed = 0;
         this.timesDreamed = 0;
@@ -47,21 +63,21 @@ public class DreamManager {
         }
 
         // Also visible if there's a card in the slot (for edge cases)
-        return cardInSlot != null;
+        return hasCardInSlot();
     }
 
     /**
      * Check if the slot has a card
      */
     public boolean hasCardInSlot() {
-        return cardInSlot != null;
+        return DreamSlotPanel.hasCard();
     }
 
     /**
      * Get the card currently in the dream slot
      */
     public AbstractCard getCardInSlot() {
-        return cardInSlot;
+        return DreamSlotPanel.getCard();
     }
 
     /**
@@ -81,42 +97,62 @@ public class DreamManager {
     }
 
     /**
-     * Calculate the base dream cost for a card
-     * Base cost + 1 if the card is Exhaust or Power type
+     * Get the ORIGINAL base cost of a card from CardLibrary (immune to Snecko)
      */
-    public static int calculateBaseDreamCost(AbstractCard card) {
-        int baseCost = card.cost;
-
-        // Add +1 for exhaust or power cards
-        if (card.exhaust || card.type == AbstractCard.CardType.POWER) {
-            baseCost += 0;
+    public static int getOriginalCardCost(AbstractCard card) {
+        if (card == null) {
+            return 0;
         }
 
+        // Look up the card in CardLibrary to get original cost
+        AbstractCard libraryCard = CardLibrary.getCard(card.cardID);
+        if (libraryCard != null) {
+            // If the card is upgraded, get the upgraded version's cost
+            if (card.upgraded) {
+                AbstractCard upgradedCopy = libraryCard.makeCopy();
+                upgradedCopy.upgrade();
+                return upgradedCopy.cost;
+            }
+            return libraryCard.cost;
+        }
+
+        // Fallback to card's current cost if not found in library
+        return card.cost;
+    }
+
+    /**
+     * Calculate the base dream cost for a card (uses original cost, immune to Snecko)
+     */
+    public static int calculateBaseDreamCost(AbstractCard card) {
+        int baseCost = getOriginalCardCost(card);
         return baseCost;
     }
 
     /**
-     * Get the current dream cost (base + penalty - modifiers)
+     * Calculate the dream cost for ANY card (for display on cards in hand)
+     * Accounts for Dreambound and DeepConnectionPower
      */
-    public int getCurrentDreamCost() {
-        if (cardInSlot == null) {
+    public static int calculateDreamCostForCard(AbstractCard card) {
+        if (card == null) {
             return 0;
         }
 
-        int baseCost = calculateBaseDreamCost(cardInSlot);
-        int finalCost = baseCost + costPenalty;
+        int baseCost = calculateBaseDreamCost(card);
+        int reduction = getDreamCostReductionFromModifiersStatic(card);
 
-        // Check for card modifiers that reduce dream cost
-        finalCost -= getDreamCostReductionFromModifiers(cardInSlot);
-
-        return Math.max(0, finalCost);
+        return Math.max(0, baseCost - reduction);
     }
 
     /**
-     * Calculate total dream cost reduction from card modifiers
+     * Static version of getDreamCostReductionFromModifiers for use with any card
      */
-    private int getDreamCostReductionFromModifiers(AbstractCard card) {
+    public static int getDreamCostReductionFromModifiersStatic(AbstractCard card) {
         int reduction = 0;
+
+        // Check if player has DeepConnectionPower (doubles Dreambound effect)
+        boolean hasDeepConnection = AbstractDungeon.player != null &&
+                AbstractDungeon.player.hasPower(DeepConnectionPower.POWER_ID);
+        int dreamboundValue = hasDeepConnection ? 2 : 1;
 
         // Check for Dreambound modifier
         try {
@@ -127,7 +163,7 @@ public class DreamManager {
                 // Check if it's a Dreambound modifier
                 if (mod.identifier(card).equals("DREAMBOUND")) {
                     if (mod instanceof yourmod.cardmods.DreamboundModifier) {
-                        reduction += ((yourmod.cardmods.DreamboundModifier) mod).getDreamCostReduction();
+                        reduction += dreamboundValue;
                     }
                 }
             }
@@ -139,16 +175,68 @@ public class DreamManager {
     }
 
     /**
-     * Inspire a card - duplicate it into the dream slot
-     * Replaces any existing card and resets cost penalty
+     * Get the current dream cost (base + penalty - modifiers)
+     * Uses stored original cost for the card in slot (immune to Snecko)
+     */
+    public int getCurrentDreamCost() {
+        if (!hasCardInSlot()) {
+            return 0;
+        }
+
+        // Use the stored original base cost (set when card was inspired)
+        int finalCost = originalBaseCost + costPenalty;
+
+        // Check for card modifiers that reduce dream cost
+        finalCost -= getDreamCostReductionFromModifiers(getCardInSlot());
+
+        return Math.max(0, finalCost);
+    }
+
+    /**
+     * Calculate total dream cost reduction from card modifiers
+     */
+    private int getDreamCostReductionFromModifiers(AbstractCard card) {
+        int reduction = 0;
+
+        // Check if player has DeepConnectionPower (doubles Dreambound effect)
+        boolean hasDeepConnection = AbstractDungeon.player != null &&
+                AbstractDungeon.player.hasPower(DeepConnectionPower.POWER_ID);
+        int dreamboundValue = hasDeepConnection ? 2 : 1;
+
+        // Check for Dreambound modifier
+        try {
+            java.util.List<basemod.abstracts.AbstractCardModifier> modifiers =
+                    basemod.helpers.CardModifierManager.modifiers(card);
+
+            for (basemod.abstracts.AbstractCardModifier mod : modifiers) {
+                // Check if it's a Dreambound modifier
+                if (mod.identifier(card).equals("DREAMBOUND")) {
+                    if (mod instanceof yourmod.cardmods.DreamboundModifier) {
+                        reduction += dreamboundValue;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // No modifiers or error
+        }
+
+        return reduction;
+    }
+
+    /**
+     * Inspire a card - move to dream pile and track it
+     * Uses the actual card instance, not a copy!
      */
     public void inspireCard(AbstractCard card) {
         if (!canInspire(card)) {
             return;
         }
 
-        // Make a copy of the card
-        this.cardInSlot = card.makeStatEquivalentCopy();
+        // Add to our custom dream pile (handles removing from other piles)
+        DreamSlotPanel.addCard(card);
+
+        // Store the original base cost (immune to Snecko)
+        this.originalBaseCost = calculateBaseDreamCost(card);
 
         // Reset cost penalty and play counter
         this.costPenalty = 0;
@@ -156,6 +244,65 @@ public class DreamManager {
 
         // Increment times dreamed counter
         this.timesDreamed++;
+
+        // Trigger onDream for relevant powers
+        triggerOnDreamPowers();
+    }
+
+    /**
+     * Return the dream card to hand (when replaced or at end of combat)
+     */
+    public void returnCardToHand() {
+        AbstractCard card = getCardInSlot();
+        if (card != null) {
+            DreamSlotPanel.returnCardToHand(card);
+        }
+    }
+
+    /**
+     * Remove dream card from all piles after being played, put back in dream pile
+     */
+    public void returnCardToDreamPile() {
+        AbstractCard card = getCardInSlot();
+        if (card != null) {
+            DreamSlotPanel.returnCardToDreamPile(card);
+        }
+    }
+
+    /**
+     * Trigger onDream method for powers that care about dreaming
+     */
+    private void triggerOnDreamPowers() {
+        if (AbstractDungeon.player == null) {
+            return;
+        }
+
+        for (AbstractPower power : AbstractDungeon.player.powers) {
+            if (power instanceof LucidityPower) {
+                ((LucidityPower) power).onDream();
+            }
+            if (power instanceof DreamDrawPower) {
+                ((DreamDrawPower) power).onDream();
+            }
+        }
+    }
+
+    /**
+     * Trigger onDreamCardPlayed for powers that care about manifesting
+     */
+    public void triggerOnDreamCardPlayedPowers() {
+        if (AbstractDungeon.player == null) {
+            return;
+        }
+
+        for (AbstractPower power : AbstractDungeon.player.powers) {
+            if (power instanceof LucidDreamerPower) {
+                ((LucidDreamerPower) power).onDreamCardPlayed();
+            }
+            if (power instanceof DreamShieldPower) {
+                ((DreamShieldPower) power).onDreamCardPlayed();
+            }
+        }
     }
 
     /**
@@ -163,7 +310,7 @@ public class DreamManager {
      * Returns true if the card should be played (cost reached 0)
      */
     public boolean materialize(int amount) {
-        if (cardInSlot == null || amount <= 0) {
+        if (!hasCardInSlot() || amount <= 0) {
             return false;
         }
 
@@ -176,24 +323,51 @@ public class DreamManager {
 
     /**
      * Called after a dream card is played
-     * If it's exhaust or power, clear the slot
+     * If it's exhaust or power, clear the slot (unless Permanence prevents it)
      * Otherwise, reset cost to base + number of times played
      */
     public void onDreamCardPlayed() {
-        if (cardInSlot == null) {
+        AbstractCard card = getCardInSlot();
+        if (card == null) {
             return;
         }
 
-        // Clear slot for exhaust or power cards
-        if (cardInSlot.exhaust || cardInSlot.type == AbstractCard.CardType.POWER) {
-            clearSlot();
+        // Check if this card would normally be cleared (exhaust or power)
+        if (card.exhaust || card.type == AbstractCard.CardType.POWER) {
+            // Check for Permanence power
+            if (AbstractDungeon.player != null &&
+                    AbstractDungeon.player.hasPower(PermanencePower.POWER_ID)) {
+
+                // Permanence prevents clearing - treat like normal card
+                timesPlayed++;
+                costPenalty = timesPlayed;
+
+                // Return card to dream pile
+                returnCardToDreamPile();
+
+                // Reduce Permanence stacks
+                AbstractPower permanence = AbstractDungeon.player.getPower(PermanencePower.POWER_ID);
+                if (permanence.amount <= 1) {
+                    AbstractDungeon.actionManager.addToTop(
+                            new com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction(
+                                    AbstractDungeon.player, AbstractDungeon.player, permanence));
+                } else {
+                    permanence.amount--;
+                    permanence.updateDescription();
+                }
+            } else {
+                // No Permanence - card is truly exhausted/removed, clear slot
+                clearSlot();
+            }
         } else {
-            // Increment times played
+            // Normal card - increment times played
             timesPlayed++;
 
             // Reset penalty to equal times played
-            // This makes cost = base + timesPlayed
             costPenalty = timesPlayed;
+
+            // Return card to dream pile for next use
+            returnCardToDreamPile();
         }
     }
 
@@ -226,10 +400,36 @@ public class DreamManager {
     }
 
     /**
+     * Get the stored original base cost of the card in slot
+     */
+    public int getOriginalBaseCost() {
+        return originalBaseCost;
+    }
+
+    /**
+     * Increment the times played counter and update cost penalty
+     * Called by DreamCardUseActionPatch after a dream card is played
+     */
+    public void incrementTimesPlayed() {
+        timesPlayed++;
+        costPenalty = timesPlayed;
+    }
+
+    /**
      * Clear the dream slot
      */
     public void clearSlot() {
-        this.cardInSlot = null;
+        DreamSlotPanel.clear();
+        this.originalBaseCost = 0;
+        this.costPenalty = 0;
+        this.timesPlayed = 0;
+    }
+
+    /**
+     * Reset just the slot state counters (called when panel is already cleared)
+     */
+    public void resetSlotState() {
+        this.originalBaseCost = 0;
         this.costPenalty = 0;
         this.timesPlayed = 0;
     }
@@ -241,28 +441,62 @@ public class DreamManager {
         clearSlot();
         this.timesDreamed = 0;
     }
-    /**
-     * Set the card in the slot directly
-     * Used to update the slot with a modified card after playing
-     */
-    public void setCardInSlot(AbstractCard card) {
-        this.cardInSlot = card;
-    }
-    /**
-     * Update the card in the slot with a modified version's stats
-     * Used after playing the dream card to preserve stat changes (like Rampage)
-     */
-    public void updateCardInSlot(AbstractCard playedCard) {
-        if (playedCard != null && this.cardInSlot != null) {
-            // Update the slot with a copy of the played card to preserve its modifications
-            this.cardInSlot = playedCard.makeStatEquivalentCopy();
-        }
-    }
+
     /**
      * Clean up at end of combat
      */
     public void onCombatEnd() {
         clearSlot();
         this.timesDreamed = 0;
+    }
+
+    /**
+     * Add a modifier to be applied to the next card rewards
+     */
+    public void addPendingRewardModifier(basemod.abstracts.AbstractCardModifier modifier) {
+        pendingRewardModifiers.add(modifier);
+    }
+
+    /**
+     * Add a random modifier to be applied to the next card rewards
+     */
+    public void addRandomRewardModifier() {
+        pendingRandomModifiers++;
+    }
+
+    /**
+     * Apply pending modifiers to card rewards and clear them
+     */
+    public void applyPendingRewardModifiers(ArrayList<AbstractCard> cards) {
+        // Apply specific modifiers
+        if (!pendingRewardModifiers.isEmpty()) {
+            for (AbstractCard card : cards) {
+                for (basemod.abstracts.AbstractCardModifier mod : pendingRewardModifiers) {
+                    basemod.helpers.CardModifierManager.addModifier(card, mod.makeCopy());
+                }
+            }
+            pendingRewardModifiers.clear();
+        }
+
+        // Apply random modifiers
+        if (pendingRandomModifiers > 0) {
+            for (AbstractCard card : cards) {
+                for (int i = 0; i < pendingRandomModifiers; i++) {
+                    basemod.abstracts.AbstractCardModifier randomMod =
+                            yourmod.cards.DreamForge.getRandomModifierForCard(card);
+                    basemod.helpers.CardModifierManager.addModifier(card, randomMod);
+                }
+            }
+            pendingRandomModifiers = 0;
+        }
+    }
+
+    /**
+     * Passive manifest 1 - called at start of turn
+     */
+    public void passiveManifest() {
+        if (hasCardInSlot()) {
+            materialize(1);
+        }
     }
 }

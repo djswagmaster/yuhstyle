@@ -1,31 +1,50 @@
 [
   {
-    "PROPER_NAME": "DREAMER",
-    "NAMES": [
-      "dreamer",
-      "dreamers"
-    ],
-    "DESCRIPTION": "DREAMER: Make your own epic keywords"
-  },
-  {
     "PROPER_NAME": "Dream",
-    "NAMES": [
-      "dream",
-      "dreamt",
-      "dreamed"
-    ],
-    "DESCRIPTION": "Choose a card from your hand to put into your Dream Slot. The card is returned to your hand when you Dream again.",
-    "COLOR": "7195c3"
+    "NAMES": ["dream", "dreamt", "dreamed"],
+    "DESCRIPTION": "Choose a card to put into your dream slot. At the start of each turn your dream card's cost is reduced by 1 and will automatically play when its cost is 0. After being played, its cost increases. The card is returned to your hand when you Dream again.",
+    "COLOR": "5BEFF7"
   },
   {
     "PROPER_NAME": "Manifest",
-    "NAMES": [
-      "manifest",
-      "manifested",
-      "manifesting"
-    ],
+    "NAMES": ["manifest", "manifested", "manifesting"],
     "DESCRIPTION": "Reduce the cost of your Dream card. When the cost reaches 0, the card is played automatically.",
-    "COLOR": "ec4598"
+    "COLOR": "E83AF7"
+  },
+  {
+    "PROPER_NAME": "Dreambound",
+    "NAMES": ["dreambound"],
+    "DESCRIPTION": "This card's Dream cost is reduced by 1.",
+    "COLOR": "ED9FB1"
+  },
+  {
+    "PROPER_NAME": "Fatigue",
+    "NAMES": ["fatigue"],
+    "DESCRIPTION": "Doubles each turn. Upon reaching stacks equal to its max HP, it becomes Stunned for the turn."
+  },
+  {
+    "PROPER_NAME": "Drowsy",
+    "NAMES": ["drowsy"],
+    "DESCRIPTION": "Upon reaching a certain threshold, becomes Stunned. Threshold increases by 50% when stunned."
+  },
+  {
+    "PROPER_NAME": "Permanence",
+    "NAMES": [
+      "permanence"
+    ],
+    "DESCRIPTION": "The next time you Manifest a Power or Exhaust card, it stays in your Dream slot instead of being removed."
+  },
+  {
+    "PROPER_NAME": "Deadly",
+    "NAMES": ["deadly"],
+    "DESCRIPTION": "Deals double damage.",
+    "COLOR": "EF7C51"
+  },
+  {
+    "PROPER_NAME": "Durable",
+    "NAMES": ["durable"],
+    "DESCRIPTION": "Gain 3 Block upon playing this card.",
+    "COLOR": "96BBE8"
   },
   {
     "PROPER_NAME": "Modifiers",
@@ -34,27 +53,5 @@
       "modifiers"
     ],
     "DESCRIPTION": "Ethereal, Exhaust, Innate, Retain, Dreambound, etc. are all Modifiers."
-  },
-  {
-    "PROPER_NAME": "Dreambound",
-    "NAMES": [
-      "dreambound"
-    ],
-    "DESCRIPTION": "This card's Dream cost is reduced by 1."
-  },
-  {
-    "PROPER_NAME": "Deadly",
-    "NAMES": [
-      "deadly"
-    ],
-    "DESCRIPTION": "Deals double damage.",
-    "COLOR": "F54927"
-  },
-  {
-    "PROPER_NAME": "Durable",
-    "NAMES": [
-      "durable"
-    ],
-    "DESCRIPTION": "Gain 3 Block upon playing this card."
   }
 ]

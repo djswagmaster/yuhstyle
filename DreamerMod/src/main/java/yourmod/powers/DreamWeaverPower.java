@@ -18,8 +18,8 @@ public class DreamWeaverPower extends AbstractEasyPower{
     }
 
     @Override
-    public void atStartOfTurn() {
-
+    public void atEndOfTurnPreEndTurnCards(boolean isPlayer) {
+        this.flash();
         this.addToBot(new MaterializeAction(amount));
 
 

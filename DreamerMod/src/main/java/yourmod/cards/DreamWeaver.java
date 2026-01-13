@@ -16,7 +16,7 @@ public class DreamWeaver extends AbstractEasyCard {
     public final static String ID = makeID("DreamWeaver");
 
     public DreamWeaver() {
-        super(ID, 1, CardType.POWER, CardRarity.RARE, CardTarget.SELF);
+        super(ID, 1, CardType.POWER, CardRarity.UNCOMMON, CardTarget.SELF);
         baseMagicNumber = magicNumber = 1;
 
     }
@@ -28,6 +28,6 @@ public class DreamWeaver extends AbstractEasyCard {
 
     @Override
     public void upp() {
-        upgradeBaseCost(0);
+        upgradeMagicNumber(1);
     }
 }

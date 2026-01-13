@@ -1,5 +1,6 @@
 package yourmod.relics;
 
+import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import yourmod.CharacterFile;
 import yourmod.actions.DreamAction;
 
@@ -14,6 +15,7 @@ public class DreamerItem extends AbstractEasyRelic {
 
     public void atBattleStart() {
         this.flash();
+        this.addToTop(new DrawCardAction(1));
         this.addToBot(new DreamAction());
     }
 }

@@ -3,7 +3,9 @@ package yourmod.cards;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import yourmod.actions.DreamAction;
 import yourmod.actions.MaterializeAction;
+import yourmod.tags.CustomTags;
 
 import static yourmod.ModFile.makeID;
 import static yourmod.util.Wiz.atb;
@@ -12,22 +14,21 @@ public class DreamBlade extends AbstractEasyCard {
     public final static String ID = makeID("DreamBlade");
 
     public DreamBlade() {
-        super(ID, 2, CardType.ATTACK, CardRarity.BASIC, CardTarget.ENEMY);
+        super(ID, 1, CardType.ATTACK, CardRarity.BASIC, CardTarget.ENEMY);
         baseDamage = 8;
-        baseMagicNumber = magicNumber = 2;
+        tags.add(CustomTags.DREAMER_CARD);
+
     }
 
     public void use(AbstractPlayer p, AbstractMonster m) {
-        // Deal damage
+
         dmg(m, AbstractGameAction.AttackEffect.SLASH_HEAVY);
 
-        // Materialize (reduce dream cost by magicNumber)
-        atb(new MaterializeAction(magicNumber));
+        atb(new DreamAction());
     }
 
     @Override
     public void upp() {
-        upgradeDamage(2);
-        upgradeMagicNumber(1);
+        upgradeDamage(3);
     }
 }

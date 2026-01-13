@@ -2,6 +2,7 @@ package yourmod.cards;
 
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import yourmod.actions.ApplyModToDreamCardAction;
 import yourmod.actions.ApplyModToHandCardAction;
 import yourmod.cardmods.DeadlyModifier;
 
@@ -18,7 +19,7 @@ public class UltimateWeapon extends AbstractEasyCard {
 
     public void use(AbstractPlayer p, AbstractMonster m) {
 
-        atb(new ApplyModToHandCardAction(new DeadlyModifier(), "DEADLY"));
+        atb(new ApplyModToDreamCardAction(new DeadlyModifier()));
     }
 
     @Override

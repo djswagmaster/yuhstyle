@@ -19,10 +19,20 @@ public class DreamAutoPlayPatch {
     public static class CheckAutoPlayDreamCard {
         @SpirePostfixPatch
         public static void Postfix(GameActionManager __instance) {
+            // Skip if already playing
+            if (isPlaying) {
+                return;
+            }
+
             DreamManager dm = DreamManager.getInstance();
 
-            // Check if dream card should auto-play and we're not already playing it
-            if (!isPlaying && dm.shouldAutoPlay()) {
+            // Check if dream card should auto-play
+            if (dm.shouldAutoPlay()) {
+                // Extra safety: check if the card is already tagged as playing
+                if (dm.hasCardInSlot() && dm.getCardInSlot().hasTag(yourmod.tags.CustomTags.DREAM_PLAYING)) {
+                    return;
+                }
+
                 isPlaying = true;
                 att(new AutoPlayDreamCardAction());
             }
@@ -31,5 +41,9 @@ public class DreamAutoPlayPatch {
 
     public static void setPlaying(boolean playing) {
         isPlaying = playing;
+    }
+
+    public static boolean isPlaying() {
+        return isPlaying;
     }
 }

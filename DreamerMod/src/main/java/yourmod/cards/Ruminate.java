@@ -3,6 +3,7 @@ package yourmod.cards;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import yourmod.actions.DreamAction;
+import yourmod.actions.MaterializeAction;
 import yourmod.tags.CustomTags;
 
 import static yourmod.ModFile.makeID;
@@ -12,22 +13,23 @@ public class Ruminate extends AbstractEasyCard {
     public final static String ID = makeID("Ruminate");
 
     public Ruminate() {
-        super(ID, 1, CardType.SKILL, CardRarity.BASIC, CardTarget.SELF);
-        baseBlock = 5;
-        tags.add(CustomTags.DREAMER_CARD);
+        super(ID, 2, CardType.SKILL, CardRarity.BASIC, CardTarget.SELF);
+        baseBlock = 8;
+        magicNumber = baseMagicNumber = 2;
 
     }
 
     public void use(AbstractPlayer p, AbstractMonster m) {
-        // Gain some block
+
         blck();
 
-        // Inspire a card from hand
-        atb(new DreamAction());
+        atb(new MaterializeAction(magicNumber));
+
     }
 
     @Override
     public void upp() {
-        upgradeBlock(3);
+        upgradeBlock(2);
+        upgradeMagicNumber(1);
     }
 }

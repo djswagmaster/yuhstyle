@@ -1,7 +1,5 @@
 package yourmod.patches;
 
-import basemod.abstracts.AbstractCardModifier;
-import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,7 +7,6 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import yourmod.cardmods.DreamboundModifier;
 import yourmod.dream.DreamManager;
 import yourmod.tags.CustomTags;
 import yourmod.util.TexLoader;
@@ -43,24 +40,8 @@ public class DreamCostRenderPatch {
                 return;
             }
 
-            // Calculate dream cost for this card with modifiers
-            int baseCost = DreamManager.calculateBaseDreamCost(__instance);
-            int reduction = 0;
-
-            // Check for Dreambound modifier
-            try {
-                for (AbstractCardModifier mod : CardModifierManager.modifiers(__instance)) {
-                    if (mod.identifier(__instance).equals("DREAMBOUND")) {
-                        if (mod instanceof DreamboundModifier) {
-                            reduction += ((DreamboundModifier) mod).getDreamCostReduction();
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                // No modifiers
-            }
-
-            int dreamCost = Math.max(0, baseCost - reduction);
+            // Calculate dream cost using the centralized method
+            int dreamCost = DreamManager.calculateDreamCostForCard(__instance);
 
             // Render dream cost on the right side of the card
             renderDreamCostOnCard(__instance, sb, dreamCost);

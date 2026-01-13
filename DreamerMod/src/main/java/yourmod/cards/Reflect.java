@@ -11,7 +11,7 @@ public class Reflect extends AbstractEasyCard {
 
     public Reflect() {
         super(ID, 0, CardType.SKILL, CardRarity.COMMON, CardTarget.SELF);
-        baseBlock = block = 1;
+        baseBlock = block = 2;
     }
 
     public void use(AbstractPlayer p, AbstractMonster m) {

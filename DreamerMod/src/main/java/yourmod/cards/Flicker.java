@@ -14,19 +14,17 @@ public class Flicker extends AbstractEasyCard {
     public final static String ID = makeID("Flicker");
 
     public Flicker() {
-        super(ID, 0, CardType.ATTACK, CardRarity.BASIC, CardTarget.NONE);
+        super(ID, 0, CardType.SKILL, CardRarity.BASIC, CardTarget.NONE);
        baseMagicNumber = magicNumber = 1;
     }
 
     public void use(AbstractPlayer p, AbstractMonster m) {
-
         atb(new MaterializeAction(magicNumber));
+        atb(new DrawCardAction(1));
     }
 
     @Override
     public void upp() {
         upgradeMagicNumber(1);
-        //this.rawDescription = cardStrings.UPGRADE_DESCRIPTION;
-        //initializeDescription();
     }
 }

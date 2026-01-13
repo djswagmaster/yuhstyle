@@ -13,8 +13,8 @@ public class ImaginarySword extends AbstractEasyCard {
 
 
     public ImaginarySword() {
-        super(ID, 1, CardType.ATTACK, CardRarity.UNCOMMON, CardTarget.ENEMY);
-        baseDamage = 9;
+        super(ID, 1, CardType.ATTACK, CardRarity.COMMON, CardTarget.ENEMY);
+        baseDamage = 8;
         CardModifierManager.addModifier(this, new DreamboundModifier());
 
     }

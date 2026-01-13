@@ -1,12 +1,14 @@
 package yourmod.actions;
 
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
-import com.megacrit.cardcrawl.actions.common.ExhaustSpecificCardAction;
-import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.vfx.cardManip.ExhaustCardEffect;
+import com.megacrit.cardcrawl.vfx.combat.FlashAtkImgEffect;
 import yourmod.dream.DreamManager;
+import yourmod.dream.DreamSlotRenderer;
 import yourmod.tags.CustomTags;
 
 public class DreamAction extends AbstractGameAction {
@@ -70,16 +72,31 @@ public class DreamAction extends AbstractGameAction {
                     if (!card.hasTag(CustomTags.DREAMER_CARD) && DreamManager.getInstance().canInspire(card)) {
                         // Check if there's already a card in the dream slot
                         if (DreamManager.getInstance().hasCardInSlot()) {
-                            AbstractCard existingDream = DreamManager.getInstance().getCardInSlot();
-                            // Add a copy of the existing dream card to hand
-                            AbstractDungeon.actionManager.addToTop(new MakeTempCardInHandAction(existingDream.makeStatEquivalentCopy()));
+                            // Return the existing dream card to hand (actual card, not a copy!)
+                            DreamManager.getInstance().returnCardToHand();
                         }
 
-                        DreamManager.getInstance().inspireCard(card);
-                    }
+                        // Play dreamy SFX
+                        CardCrawlGame.sound.play("POWER_FLIGHT", 0.2f);
+                        CardCrawlGame.sound.play("ORB_SLOT_GAIN", 0.3f);
 
-                    // Exhaust the card
-                    AbstractDungeon.actionManager.addToTop(new ExhaustSpecificCardAction(card, AbstractDungeon.player.hand));
+                        // VFX at card location
+                        AbstractDungeon.effectsQueue.add(new ExhaustCardEffect(card));
+
+                        // VFX at dream slot
+                        AbstractDungeon.effectsQueue.add(new FlashAtkImgEffect(
+                                DreamSlotRenderer.getSlotX(),
+                                DreamSlotRenderer.getSlotY(),
+                                AttackEffect.NONE
+                        ));
+
+                        // The card is already removed from hand by the select screen
+                        // Just inspire it (stores reference)
+                        DreamManager.getInstance().inspireCard(card);
+                    } else {
+                        // Invalid card - return it to hand
+                        AbstractDungeon.player.hand.addToTop(card);
+                    }
                 }
             }
 

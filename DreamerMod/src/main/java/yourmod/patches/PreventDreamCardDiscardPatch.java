@@ -1,4 +1,4 @@
-package yourmod.patches;
+/*package yourmod.patches;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
@@ -39,4 +39,4 @@ public class PreventDreamCardDiscardPatch {
             return SpireReturn.Continue();
         }
     }
-}
+}*/

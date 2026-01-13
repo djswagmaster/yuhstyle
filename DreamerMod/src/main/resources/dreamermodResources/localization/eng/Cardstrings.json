@@ -9,7 +9,7 @@
   },
   "${ModID}:Ruminate": {
     "NAME": "Ruminate",
-    "DESCRIPTION": "Gain !B! Block. NL dreamermod:Dream."
+    "DESCRIPTION": "Gain !B! Block. NL dreamermod:Manifest !M!."
   },
   "${ModID}:Brainstorm": {
     "NAME": "Brainstorm",
@@ -17,104 +17,304 @@
   },
   "${ModID}:Flicker": {
     "NAME": "Flicker",
-    "DESCRIPTION": "dreamermod:Manifest !M!."
+    "DESCRIPTION": "dreamermod:Manifest !M!. NL Draw a card."
   },
   "${ModID}:DreamBlade": {
     "NAME": "Dream Blade",
-    "DESCRIPTION": "Deal !D! damage. NL dreamermod:Manifest !M!."
+    "DESCRIPTION": "Deal !D! damage. NL dreamermod:Dream."
   },
-  "${ModID}:DreamEnhancement": {
-    "NAME": "Dream Enhancement",
-    "DESCRIPTION": "Gain !B! Block. NL Add dreamermod:Dreambound to a card in your hand."
+  "${ModID}:ObjectPermanence": {
+    "NAME": "Object Permanence",
+    "DESCRIPTION": "Unplayable. NL When drawn, gain !M! dreamermod:Permanence and Exhaust."
+  },
+  "${ModID}:DeepConnection": {
+    "NAME": "Deep Connection",
+    "DESCRIPTION": "dreamermod:Dreambound reduces dreamermod:Dream cost by 2. NL Add dreamermod:Dreambound to !M! random cards in your hand."
+  },
+  "${ModID}:LucidDreamer": {
+    "NAME": "Lucid Dreamer",
+    "DESCRIPTION": "The first time you fully dreamermod:Manifest a card each turn, dreamermod:Dream.",
+    "UPGRADE_DESCRIPTION": "The first !M! times you fully dreamermod:Manifest a card each turn, dreamermod:Dream."
+  },
+  "${ModID}:MindBreak": {
+    "NAME": "Mind Break",
+    "DESCRIPTION": "Deal !D! damage. NL Apply !M! Weak. NL Apply !M! Vulnerable."
+  },
+  "${ModID}:CastOff": {
+    "NAME": "Cast Off",
+    "DESCRIPTION": "Add dreamermod:Dreambound to a card in your hand. NL dreamermod:Dream."
   },
   "${ModID}:Reinforce": {
     "NAME": "Reinforce",
-    "DESCRIPTION": "Gain !B! Block. NL Add dreamermod:Durable to a card in your hand."
+    "DESCRIPTION": "Gain !B! Block. NL Add dreamermod:Durable to a card in your hand.",
+    "UPGRADE_DESCRIPTION": "Gain !B! Block. NL Add dreamermod:Durable to !M! cards in your hand."
+  },
+  "${ModID}:RedInfluence": {
+    "NAME": "Red Influence",
+    "DESCRIPTION": "Choose 1 of 3 random [#FF0000]Red[] cards to add to your hand.",
+    "UPGRADE_DESCRIPTION": "Choose 1 of 3 random [#FF0000]Red[] cards to add to your hand. NL dreamermod:Dream."
+  },
+  "${ModID}:GreenInfluence": {
+    "NAME": "Green Influence",
+    "DESCRIPTION": "Choose 1 of 3 random [#0DFF00]Green[] cards to add to your hand.",
+    "UPGRADE_DESCRIPTION": "Choose 1 of 3 random [#0DFF00]Green[] cards to add to your hand. NL dreamermod:Dream."
+  },
+  "${ModID}:BlueInfluence": {
+    "NAME": "Blue Influence",
+    "DESCRIPTION": "Choose 1 of 3 random [#0090FF]Blue[] cards to add to your hand.",
+    "UPGRADE_DESCRIPTION": "Choose 1 of 3 random [#0090FF]Blue[] cards to add to your hand. NL dreamermod:Dream."
+  },
+  "${ModID}:PurpleInfluence": {
+    "NAME": "Purple Influence",
+    "DESCRIPTION": "Choose 1 of 3 random [#AA00FF]Purple[] cards to add to your hand.",
+    "UPGRADE_DESCRIPTION": "Choose 1 of 3 random [#AA00FF]Purple[] cards to add to your hand. NL dreamermod:Dream."
+  },
+  "${ModID}:DreamStrength": {
+    "NAME": "Dream Strength",
+    "DESCRIPTION": "Whenever you dreamermod:Dream, gain !M! Strength and Dexterity."
+  },
+  "${ModID}:DreamDraw": {
+    "NAME": "Dream Draw",
+    "DESCRIPTION": "Whenever you dreamermod:Dream, draw a card.",
+    "UPGRADE_DESCRIPTION": "Innate. NL Whenever you dreamermod:Dream, draw a card."
+  },
+  "${ModID}:Mirage": {
+    "NAME": "Mirage",
+    "DESCRIPTION": "Gain !B! Block. NL Apply !M! Weak to ALL enemies. NL Ethereal."
+  },
+  "${ModID}:ModifierMastery": {
+    "NAME": "Modifier Mastery",
+    "DESCRIPTION": "Whenever you play a card with a dreamermod:Modifier, deal !M! damage to a random enemy."
+  },
+  "${ModID}:Unleash": {
+    "NAME": "Unleash",
+    "DESCRIPTION": "dreamermod:Manifest X, X times. NL Exhaust.",
+    "UPGRADE_DESCRIPTION": "dreamermod:Manifest X+1, X times. NL Exhaust."
+  },
+  "${ModID}:SnapBack": {
+    "NAME": "Snap Back",
+    "DESCRIPTION": "Gain [E] [E] . NL Return your dreamermod:Dream card to your hand.",
+    "UPGRADE_DESCRIPTION": "Gain [E] [E] [E] . NL Return your dreamermod:Dream card to your hand."
+  },
+  "${ModID}:ReinIn": {
+    "NAME": "Rein In",
+    "DESCRIPTION": "Deal !D! damage. NL Reduce your dreamermod:Dream card's cost by !M!, down to a minimum of 1."
+  },
+  "${ModID}:HoldOn": {
+    "NAME": "Hold On",
+    "DESCRIPTION": "Gain !B! Block. NL Add Retain to a card in your hand."
+  },
+  "${ModID}:MirrorImage": {
+    "NAME": "Mirror Image",
+    "DESCRIPTION": "Add a copy of your dreamermod:Dream card to your hand. It costs !M! less to play this turn. NL Exhaust."
   },
   "${ModID}:Recall": {
     "NAME": "Recall",
-    "DESCRIPTION": "Add a copy of your dreamermod:Dream card to your hand. It costs !M! less to play this turn. NL Exhaust."
+    "DESCRIPTION": "Put a card from your discard pile into your hand."
+  },
+  "${ModID}:Fortify": {
+    "NAME": "Fortitude",
+    "DESCRIPTION": "At the start of each turn, add dreamermod:Durable to a random card in your hand.",
+    "UPGRADE_DESCRIPTION": "Innate. NL At the start of each turn, add dreamermod:Durable to a random card in your hand."
+  },
+  "${ModID}:Abstraxe": {
+    "NAME": "Abstraxe",
+    "DESCRIPTION": "Deal !D! damage."
+  },
+  "${ModID}:ColorBloom": {
+    "NAME": "Color Bloom",
+    "DESCRIPTION": "Innate. NL Deal !D! damage. NL Draw a card for each dreamermod:Modifier on this card."
+  },
+  "${ModID}:MindStrike": {
+    "NAME": "Mind Strike",
+    "DESCRIPTION": "Retain. NL If the enemy intends to attack, deal !D! damage."
+  },
+  "${ModID}:Envy": {
+    "NAME": "Envy",
+    "DESCRIPTION": "Deal !D! damage. NL If the target has more HP than you, heal !M! HP."
+  },
+  "${ModID}:Fester": {
+    "NAME": "Fester",
+    "DESCRIPTION": "Deal !D! damage. NL Enemy takes !M! damage when targeted by any Fester card."
   },
   "${ModID}:UltimateWeapon": {
     "NAME": "Ultimate Weapon",
-    "DESCRIPTION": "Add dreamermod:Deadly to a card in your hand. NL Exhaust."
+    "DESCRIPTION": "Add dreamermod:Deadly to your current Dream card. NL Exhaust."
+  },
+  "${ModID}:RecurringNightmare": {
+    "NAME": "Recurring Terror",
+    "DESCRIPTION": "Deal !D! damage. NL Shuffle a copy of this card into your draw pile."
   },
   "${ModID}:ImaginarySword": {
     "NAME": "Imaginary Sword",
     "DESCRIPTION": "Deal !D! damage."
   },
+  "${ModID}:DreamForge": {
+    "NAME": "Dream Forge",
+    "DESCRIPTION": "Each card reward after this combat gains a random dreamermod:Modifier. NL Exhaust."
+  },
+  "${ModID}:Inspire": {
+    "NAME": "Inspiration",
+    "DESCRIPTION": "Gain [E] . NL Draw a card.",
+    "UPGRADE_DESCRIPTION": "Gain [E] [E] . NL Draw a card."
+  },
+  "${ModID}:Siphon": {
+    "NAME": "Siphon",
+    "DESCRIPTION": "Gain [E] equal to the number of dreamermod:Modifiers on a card in your hand. NL Exhaust.",
+    "UPGRADE_DESCRIPTION": "Gain [E] equal to the number of dreamermod:Modifiers on a card in your hand."
+  },
+  "${ModID}:Mummify": {
+    "NAME": "Mummify",
+    "DESCRIPTION": "Deal !D! damage. NL If Fatal, gain !M! dreamermod:Permanence."
+  },
+  "${ModID}:Backtrack": {
+    "NAME": "Backtrack",
+    "DESCRIPTION": "At the end of your turn, shuffle up to !M! cards from your discard pile into your draw pile."
+  },
+  "${ModID}:ForwardThinking": {
+    "NAME": "Forward Thinking",
+    "DESCRIPTION": "Exhaust your discard pile. NL At the start of your turn, draw 1 card."
+  },
+  "${ModID}:OozeBlast": {
+    "NAME": "Ooze Blast",
+    "DESCRIPTION": "Deal !D! damage to ALL enemies. NL Add !M! Slimed to your discard pile."
+  },
+  "${ModID}:LunarForm": {
+    "NAME": "Lunar Form",
+    "DESCRIPTION": "Gain [E] [E] at the start of your turn. Whenever you draw a card, it becomes Ethereal.",
+    "UPGRADE_DESCRIPTION": "Gain [E] [E] [E] at the start of your turn. Whenever you draw a card, it becomes Ethereal."
+  },
   "${ModID}:Reflect": {
     "NAME": "Reflect",
     "DESCRIPTION": "Gain !B! Block. NL Grants 1 additional Block for each time you've dreamermod:Dreamed this combat."
   },
+  "${ModID}:FullCircle": {
+    "NAME": "Full Circle",
+    "DESCRIPTION": "Gain !B! Block. NL Deal !D! damage."
+  },
+  "${ModID}:CreativeSparks": {
+    "NAME": "Creative Sparks",
+    "DESCRIPTION": "Deal !D! damage to a random enemy !M! times."
+  },
   "${ModID}:Scythe": {
     "NAME": "Soul Scythe",
-    "DESCRIPTION": "Deal !D! damage to ALL enemies."
+    "DESCRIPTION": "Deal !D! damage."
+  },
+  "${ModID}:SleepParalysis": {
+    "NAME": "Sleep Paralysis",
+    "DESCRIPTION": "Apply !M! dreamermod:Fatigue to ALL enemies. NL Exhaust."
   },
   "${ModID}:Actualize": {
     "NAME": "Actualize",
     "DESCRIPTION": "dreamermod:Dream. NL dreamermod:Manifest !M!."
   },
-  "${ModID}:SharpeningStone": {
+  "${ModID}:DrawAttack": {
+    "NAME": "Draw Attack",
+    "DESCRIPTION": "Deal !D! damage. NL Draw !M! cards."
+  },
+  "${ModID}:Discombobulate": {
+    "NAME": "Discombobulate",
+    "DESCRIPTION": "Deal !D! damage. NL Apply !M! dreamermod:Fatigue."
+  },
+  "${ModID}:Lullaby": {
+    "NAME": "Lullaby",
+    "DESCRIPTION": "Apply !M! dreamermod:Fatigue."
+  },
+  "${ModID}:Lucidate": {
+    "NAME": "Lucidate",
+    "DESCRIPTION": "dreamermod:Manifest !M!."
+  },
+  "${ModID}:Desperation": {
+    "NAME": "Desperation",
+    "DESCRIPTION": "Deal !D! damage. NL Deals 1 less damage for each card in your discard pile."
+  },
+  "${ModID}:Mace": {
+    "NAME": "Magic Mace",
+    "DESCRIPTION": "Deal !D! damage. NL dreamermod:Manifest !M!."
+  },
+  "${ModID}:Liminality": {
+    "NAME": "Liminality",
+    "DESCRIPTION": "If this card is dreamermod:Manifested, deal !D! damage to ALL enemies. NL Exhaust."
+  },
+  "${ModID}:Sharpen": {
     "NAME": "Sharpen",
-    "DESCRIPTION": "Increase the damage of your current dreamermod:Dream card by !M!."
+    "DESCRIPTION": "Increase the damage of a card in your hand by !M! times X for the combat."
   },
   "${ModID}:DreamWeaver": {
     "NAME": "Dream Weaver",
-    "DESCRIPTION": "At the start of each turn, dreamermod:Manifest !M!."
+    "DESCRIPTION": "At the end of each turn, dreamermod:Manifest !M!."
   },
-  "${ModID}:ExampleTwoAmountPowerCard": {
-    "NAME": "Two Amount Power",
-    "DESCRIPTION": "At the start of your turn, gain !M! Strength and !${ModID}:m2! Dexterity."
-  },
-  "${ModID}:InlinePowerDemo": {
-    "NAME": "Inline Power",
-    "DESCRIPTION": "Strikes deal !M! more damage. NL At the end of your turn, gain !M! Block.",
+  "${ModID}:Inception": {
+    "NAME": "Inception",
+    "DESCRIPTION": "Permanently replace this card in your deck with a copy of your dreamermod:Dream card. NL Exhaust.",
     "EXTENDED_DESCRIPTION": [
-      "Strike+, Block+",
-      "#yStrikes deal #b",
-      " additional damage. At the end of your turn, gain #b",
-      " #yBlock."
+      "No card in Dream slot."
     ]
   },
-
-  "${ModID}:SelectCardsPlusCardMods": {
-    "NAME": "Cool Card Stuff",
-    "DESCRIPTION": "Choose from 1 of 3 cost 0 cards from any class. NL Add it into your hand. NL It gains Ethereal and Exhaust.",
-    "EXTENDED_DESCRIPTION": [
-      "Choose a card to add into your hand with Ethereal and Exhaust."
-    ]
+  "${ModID}:NightTerror": {
+    "NAME": "Night Terror",
+    "DESCRIPTION": "Deal !D! damage to ALL enemies with a debuff."
   },
-  "${ModID}:EasyXCostDemo": {
-    "NAME": "Easy X Cost",
-    "DESCRIPTION": "{@@}Deal !D! damage X{!M!|>0=+!M!} times. NL Gain X{!M!|>0=+!M!} Strength. NL Exhaust."
+  "${ModID}:Brace": {
+    "NAME": "Brace",
+    "DESCRIPTION": "Double all Block gained this turn. NL Exhaust.",
+    "UPGRADE_DESCRIPTION": "Double all Block gained this turn."
   },
-  "${ModID}:EasyModalChoiceDemo": {
-    "NAME": "Easy Modal Choice",
-    "DESCRIPTION": "Choose one: Draw !M! cards or gain !${ModID}:m2! Strength.",
-    "EXTENDED_DESCRIPTION": [
-      "Draw",
-      "Draw ",
-      " cards.",
-      "Strength",
-      "Gain ",
-      " Strength."
-    ]
+  "${ModID}:ClearMind": {
+    "NAME": "Clear Mind",
+    "DESCRIPTION": "Gain !B! Block. NL If your dreamermod:Dream slot is empty, gain !M! additional Block."
   },
-  "${ModID}:DrawAndShiv": {
-    "NAME": "Draw and Shiv",
-    "DESCRIPTION": "Draw 1 card. NL Add 1 *Shiv into your hand."
+  "${ModID}:Miasma": {
+    "NAME": "Miasma",
+    "DESCRIPTION": "Apply !M! Vulnerable to ALL enemies. NL Add a Slimed to your discard pile."
   },
-  "${ModID}:TwoTypesOfDamage": {
-    "NAME": "Two Damage Values",
-    "DESCRIPTION": "Deal !D! damage. NL If you're Vulnerable, deal !${ModID}:sd! damage instead."
+  "${ModID}:GrowingTerror": {
+    "NAME": "Growing Terror",
+    "DESCRIPTION": "Deal !D! damage. NL Increase this card's damage by !M! whenever it enters your hand."
   },
-  "${ModID}:StartupBlockCard": {
-    "NAME": "Startup And AOE",
-    "DESCRIPTION": "Deal !D! damage to ALL enemies. NL Startup: Gain !M! Block."
+  "${ModID}:DreamShield": {
+    "NAME": "Dream Shield",
+    "DESCRIPTION": "Whenever you dreamermod:Manifest a card, gain !M! Block."
   },
-  "${ModID}:MultiCardPreviewAndDrawCallback": {
-    "NAME": "Previews and Callbacks",
-    "DESCRIPTION": "{@@}Shuffle *Smite{!Upgrades!|>0=+} and *Safety{!Upgrades!|>0=+} into your draw pile. NL Draw 1 card. NL If it's Colorless, deal !D! damage to ALL enemies."
+  "${ModID}:NightmareFuel": {
+    "NAME": "Nightmare Fuel",
+    "DESCRIPTION": "Reduce the Max HP of ALL enemies by !M!%. NL Exhaust."
+  },
+  "${ModID}:Momentum": {
+    "NAME": "Momentum",
+    "DESCRIPTION": "Deal !M! damage. NL Deals additional equal to the number of cards played this combat."
+  },
+  "${ModID}:DozeOff": {
+    "NAME": "Doze Off",
+    "DESCRIPTION": "Gain !B! Block. NL At the start of your next turn, dreamermod:Dream."
+  },
+  "${ModID}:GrowingNightmare": {
+    "NAME": "Growing Nightmare",
+    "DESCRIPTION": "At the end of your turn, deal !M! damage to ALL enemies and double this damage"
+  },
+  "${ModID}:Premonition": {
+    "NAME": "Premonition",
+    "DESCRIPTION": "Innate. NL Put 1 card from your draw pile into your hand.",
+    "UPGRADE_DESCRIPTION": "Innate. NL Put !M! cards from your draw pile into your hand."
+  },
+  "${ModID}:Fling": {
+    "NAME": "Fling",
+    "DESCRIPTION": "Deal !D! damage to a random enemy. NL Draw a card."
+  },
+  "${ModID}:Subdue": {
+    "NAME": "Subdue",
+    "DESCRIPTION": "Reduce ALL enemies' Strength by !M! this turn. NL Retain your hand this turn."
+  },
+  "${ModID}:RestfulSleep": {
+    "NAME": "Restful Sleep",
+    "DESCRIPTION": "Gain !M! Regen. NL Exhaust."
+  },
+  "${ModID}:Enlighten": {
+    "NAME": "Enlighten",
+    "DESCRIPTION": "Deal !D! damage. NL Upgrade a random card in your hand."
+  },
+  "${ModID}:Escalation": {
+    "NAME": "Escalation",
+    "DESCRIPTION": "Ethereal. NL Deal !D! damage. NL Next turn, gain [E] ."
   }
 }

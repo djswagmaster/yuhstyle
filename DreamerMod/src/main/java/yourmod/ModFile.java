@@ -23,6 +23,7 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import yourmod.cards.AbstractEasyCard;
 import yourmod.cards.cardvars.AbstractEasyDynamicVariable;
+import yourmod.dream.DreamManager;
 import yourmod.potions.AbstractEasyPotion;
 import yourmod.relics.AbstractEasyRelic;
 import yourmod.util.KeywordInfo;
@@ -39,7 +40,9 @@ public class ModFile implements
         EditStringsSubscriber,
         EditKeywordsSubscriber,
         EditCharactersSubscriber,
-        AddAudioSubscriber {
+        AddAudioSubscriber,
+        OnPlayerTurnStartSubscriber,
+        StartGameSubscriber {
 
     public static final String modID = "dreamermod"; //DREAMER: Change this.
 
@@ -119,16 +122,16 @@ public class ModFile implements
     @Override
     public void receiveEditCharacters() {
         BaseMod.addCharacter(new CharacterFile(CharacterFile.characterStrings.NAMES[1], CharacterFile.Enums.THE_DREAMER),
-            CHARSELECT_BUTTON, CHARSELECT_PORTRAIT, CharacterFile.Enums.THE_DREAMER);
-        
+                CHARSELECT_BUTTON, CHARSELECT_PORTRAIT, CharacterFile.Enums.THE_DREAMER);
+
         new AutoAdd(modID)
-            .packageFilter(AbstractEasyPotion.class)
-            .any(AbstractEasyPotion.class, (info, potion) -> {
-                if (potion.pool == null)
-                    BaseMod.addPotion(potion.getClass(), potion.liquidColor, potion.hybridColor, potion.spotsColor, potion.ID);
-                else
-                    BaseMod.addPotion(potion.getClass(), potion.liquidColor, potion.hybridColor, potion.spotsColor, potion.ID, potion.pool);
-            });
+                .packageFilter(AbstractEasyPotion.class)
+                .any(AbstractEasyPotion.class, (info, potion) -> {
+                    if (potion.pool == null)
+                        BaseMod.addPotion(potion.getClass(), potion.liquidColor, potion.hybridColor, potion.spotsColor, potion.ID);
+                    else
+                        BaseMod.addPotion(potion.getClass(), potion.liquidColor, potion.hybridColor, potion.spotsColor, potion.ID, potion.pool);
+                });
     }
 
     @Override
@@ -150,9 +153,9 @@ public class ModFile implements
     @Override
     public void receiveEditCards() {
         new AutoAdd(modID)
-            .packageFilter(AbstractEasyDynamicVariable.class)
-            .any(DynamicVariable.class, (info, var) -> 
-                BaseMod.addDynamicVariable(var));
+                .packageFilter(AbstractEasyDynamicVariable.class)
+                .any(DynamicVariable.class, (info, var) ->
+                        BaseMod.addDynamicVariable(var));
         new AutoAdd(modID)
                 .packageFilter(AbstractEasyCard.class)
                 .setDefaultSeen(true)
@@ -188,5 +191,16 @@ public class ModFile implements
                 BaseMod.addKeyword(modID, keyword.PROPER_NAME, keyword.NAMES, keyword.DESCRIPTION);
             }
         }
+    }
+
+    @Override
+    public void receiveOnPlayerTurnStart() {
+        DreamManager.getInstance().passiveManifest();
+    }
+
+    @Override
+    public void receiveStartGame() {
+        // Clear dream pile when a new game starts
+        yourmod.ui.DreamSlotPanel.clear();
     }
 }
