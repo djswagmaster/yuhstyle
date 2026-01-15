@@ -31,6 +31,10 @@ public class MaterializeAction extends AbstractGameAction {
             return;
         }
 
+        // Debug: log current state before materialize runs
+        System.out.println("[DREAM][MaterializeAction] BEFORE materialize: timesPlayed=" + dm.getTimesPlayed()
+                + " costPenalty=" + dm.getCostPenalty() + " currentDreamCost=" + dm.getCurrentDreamCost());
+
         // Play manifest SFX
         CardCrawlGame.sound.play("STANCE_ENTER_CALM", 0.4f);
 
@@ -44,6 +48,10 @@ public class MaterializeAction extends AbstractGameAction {
         // Materialize (reduce cost)
         // The DreamAutoPlayPatch will handle auto-playing if cost reaches 0
         dm.materialize(materializeAmount);
+
+        // Debug: log state after materialize runs
+        System.out.println("[DREAM][MaterializeAction] AFTER materialize: timesPlayed=" + dm.getTimesPlayed()
+                + " costPenalty=" + dm.getCostPenalty() + " currentDreamCost=" + dm.getCurrentDreamCost());
 
         this.isDone = true;
     }

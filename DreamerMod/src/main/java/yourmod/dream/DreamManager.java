@@ -139,8 +139,15 @@ public class DreamManager {
 
         int baseCost = calculateBaseDreamCost(card);
         int reduction = getDreamCostReductionFromModifiersStatic(card);
+        int finalCost = Math.max(0, baseCost - reduction);
 
-        return Math.max(0, baseCost - reduction);
+        // Check for VividDreamsOrb relic (increases all dream costs by 1)
+        if (AbstractDungeon.player != null &&
+                AbstractDungeon.player.hasRelic(yourmod.relics.VividDreamsOrb.ID)) {
+            finalCost += 1;
+        }
+
+        return finalCost;
     }
 
     /**
@@ -188,6 +195,12 @@ public class DreamManager {
 
         // Check for card modifiers that reduce dream cost
         finalCost -= getDreamCostReductionFromModifiers(getCardInSlot());
+
+        // Check for VividDreamsOrb relic (increases all dream costs by 1)
+        if (AbstractDungeon.player != null &&
+                AbstractDungeon.player.hasRelic(yourmod.relics.VividDreamsOrb.ID)) {
+            finalCost += 1;
+        }
 
         return Math.max(0, finalCost);
     }
@@ -238,7 +251,8 @@ public class DreamManager {
         // Store the original base cost (immune to Snecko)
         this.originalBaseCost = calculateBaseDreamCost(card);
 
-        // Reset cost penalty and play counter
+        // Reset cost penalty and play counter to 0
+        // This way the first play will add +1 to both
         this.costPenalty = 0;
         this.timesPlayed = 0;
 
@@ -255,7 +269,24 @@ public class DreamManager {
     public void returnCardToHand() {
         AbstractCard card = getCardInSlot();
         if (card != null) {
-            DreamSlotPanel.returnCardToHand(card);
+            // Remove from dream pile first
+            DreamSlotPanel.dreamPile.removeCard(card);
+
+            // Then add to hand with proper cleanup
+            DreamSlotPanel.resetCardVisuals(card);
+            card.resetAttributes();
+            card.applyPowers();
+
+            if (AbstractDungeon.player != null) {
+                if (AbstractDungeon.player.hand.size() < 10) {
+                    AbstractDungeon.player.hand.addToTop(card);
+                } else {
+                    AbstractDungeon.player.discardPile.addToTop(card);
+                }
+            }
+
+            // Reset state
+            resetSlotState();
         }
     }
 
@@ -325,6 +356,9 @@ public class DreamManager {
      * Called after a dream card is played
      * If it's exhaust or power, clear the slot (unless Permanence prevents it)
      * Otherwise, reset cost to base + number of times played
+     *
+     * NOTE: This method is actually handled by DreamCardUseActionPatch now,
+     * but kept for backwards compatibility
      */
     public void onDreamCardPlayed() {
         AbstractCard card = getCardInSlot();
@@ -333,37 +367,34 @@ public class DreamManager {
         }
 
         // Check if this card would normally be cleared (exhaust or power)
-        if (card.exhaust || card.type == AbstractCard.CardType.POWER) {
-            // Check for Permanence power
-            if (AbstractDungeon.player != null &&
-                    AbstractDungeon.player.hasPower(PermanencePower.POWER_ID)) {
+        boolean shouldClear = (card.exhaust || card.type == AbstractCard.CardType.POWER);
+        boolean hasPermanence = AbstractDungeon.player != null &&
+                AbstractDungeon.player.hasPower(PermanencePower.POWER_ID);
 
-                // Permanence prevents clearing - treat like normal card
-                timesPlayed++;
-                costPenalty = timesPlayed;
+        if (shouldClear && !hasPermanence) {
+            // No Permanence - card is truly exhausted/removed, clear slot
+            clearSlot();
+        } else if (shouldClear && hasPermanence) {
+            // Permanence prevents clearing - treat like normal card
+            timesPlayed++;
+            costPenalty = timesPlayed;
 
-                // Return card to dream pile
-                returnCardToDreamPile();
+            // Return card to dream pile
+            returnCardToDreamPile();
 
-                // Reduce Permanence stacks
-                AbstractPower permanence = AbstractDungeon.player.getPower(PermanencePower.POWER_ID);
-                if (permanence.amount <= 1) {
-                    AbstractDungeon.actionManager.addToTop(
-                            new com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction(
-                                    AbstractDungeon.player, AbstractDungeon.player, permanence));
-                } else {
-                    permanence.amount--;
-                    permanence.updateDescription();
-                }
+            // Reduce Permanence stacks
+            AbstractPower permanence = AbstractDungeon.player.getPower(PermanencePower.POWER_ID);
+            if (permanence.amount <= 1) {
+                AbstractDungeon.actionManager.addToTop(
+                        new com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction(
+                                AbstractDungeon.player, AbstractDungeon.player, permanence));
             } else {
-                // No Permanence - card is truly exhausted/removed, clear slot
-                clearSlot();
+                permanence.amount--;
+                permanence.updateDescription();
             }
         } else {
             // Normal card - increment times played
             timesPlayed++;
-
-            // Reset penalty to equal times played
             costPenalty = timesPlayed;
 
             // Return card to dream pile for next use
@@ -406,13 +437,39 @@ public class DreamManager {
         return originalBaseCost;
     }
 
-    /**
-     * Increment the times played counter and update cost penalty
-     * Called by DreamCardUseActionPatch after a dream card is played
-     */
     public void incrementTimesPlayed() {
         timesPlayed++;
+        // SET to timesPlayed (creates new baseline)
         costPenalty = timesPlayed;
+
+        System.out.println("  incrementTimesPlayed: timesPlayed=" + timesPlayed + ", costPenalty=" + costPenalty);
+    }
+    /**
+     * Apply the current dream cost penalty to the provided card instance immediately.
+     * This is intended to be called on newly-created materialized cards so they reflect the
+     * current DreamManager penalty right away.
+     */
+    public void applyCurrentPenaltyTo(com.megacrit.cardcrawl.cards.AbstractCard card) {
+        if (card == null) return;
+        int penalty = getCostPenalty(); // existing method you already have
+        if (penalty <= 0) return;
+
+        try {
+            // Use setCostForTurn so the card instance used in the current combat/turn respects the penalty.
+            // Do not overwrite base cost; only adjust costForTurn for the current instance.
+            int current = card.costForTurn;
+            // If costForTurn isn't initialized (-1 used in some cases), use base cost
+            if (current < 0) {
+                current = card.cost;
+            }
+            int newCost = Math.max(0, current - penalty);
+            card.setCostForTurn(newCost);
+            // If you also want the UI to show reduced cost, set isCostModifiedForTurn to true:
+            card.isCostModifiedForTurn = (newCost != card.cost);
+        } catch (Exception e) {
+            System.err.println("DreamManager.applyCurrentPenaltyTo error: " + e);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -492,11 +549,14 @@ public class DreamManager {
     }
 
     /**
-     * Passive manifest 1 - called at start of turn
+     * Validate dream pile state - for debugging
      */
-    public void passiveManifest() {
-        if (hasCardInSlot()) {
-            materialize(1);
+    public void validateDreamPileState() {
+        if (DreamSlotPanel.dreamPile.size() > 1) {
+            System.err.println("ERROR: Multiple cards in dream pile! Count: " + DreamSlotPanel.dreamPile.size());
+            for (int i = 0; i < DreamSlotPanel.dreamPile.size(); i++) {
+                System.err.println("  Card " + i + ": " + DreamSlotPanel.dreamPile.group.get(i).name);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package yourmod.powers;
 
+import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.PowerStrings;
@@ -26,6 +27,7 @@ public class DozeOffPower extends AbstractEasyPower {
     @Override
     public void atStartOfTurnPostDraw() {
         this.flash();
+        atb(new WaitAction(10));
         atb(new DreamAction());
         atb(new com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction(this.owner, this.owner, this));
     }

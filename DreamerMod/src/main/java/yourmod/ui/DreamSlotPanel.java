@@ -50,6 +50,28 @@ public class DreamSlotPanel extends AbstractPanel {
      * Add a card to the dream pile
      */
     public static void addCard(AbstractCard card) {
+        // CRITICAL SAFETY CHECK: Ensure pile is empty before adding
+        if (!dreamPile.isEmpty()) {
+            System.err.println("WARNING: Dream pile not empty when adding new card! Clearing...");
+            System.err.println("  Current pile size: " + dreamPile.size());
+            for (int i = 0; i < dreamPile.size(); i++) {
+                System.err.println("  Card " + i + ": " + dreamPile.group.get(i).name);
+            }
+
+            // Emergency clear - this shouldn't happen but prevents corruption
+            AbstractCard oldCard = dreamPile.group.get(0);
+            dreamPile.clear();
+
+            // Try to recover the old card
+            if (AbstractDungeon.player != null && AbstractDungeon.player.hand.size() < 10) {
+                oldCard.resetAttributes();
+                AbstractDungeon.player.hand.addToTop(oldCard);
+                System.err.println("  Recovered old card to hand: " + oldCard.name);
+            } else {
+                System.err.println("  Old card lost (hand full)");
+            }
+        }
+
         // Remove from all other piles first
         if (AbstractDungeon.player != null) {
             AbstractDungeon.player.hand.removeCard(card);
@@ -59,10 +81,8 @@ public class DreamSlotPanel extends AbstractPanel {
             AbstractDungeon.player.limbo.removeCard(card);
         }
 
-        // Add to our pile if not already there
-        if (!dreamPile.contains(card)) {
-            dreamPile.addToTop(card);
-        }
+        // Add to our pile (should always be empty at this point)
+        dreamPile.addToTop(card);
 
         // Reset visual state
         resetCardVisuals(card);

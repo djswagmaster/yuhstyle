@@ -38,12 +38,13 @@ public class AutoPlayDreamCardAction extends AbstractGameAction {
                 return;
             }
 
-            // IMMEDIATELY increment times played BEFORE playing
-            // This ensures shouldAutoPlay() returns false during the card's effect
-            dm.incrementTimesPlayed();
-
             // Get the ACTUAL card from the dream slot
             AbstractCard cardToPlay = dm.getCardInSlot();
+
+            // Log for debugging
+            System.out.println("Auto-playing dream card: " + cardToPlay.name +
+                    " (Type: " + cardToPlay.type +
+                    ", Exhaust: " + cardToPlay.exhaust + ")");
 
             // Play special SFX for auto-play
             CardCrawlGame.sound.play("POWER_FLIGHT", 0.5f);

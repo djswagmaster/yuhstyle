@@ -50,13 +50,23 @@ public class DreamSlotRenderer {
             return;
         }
 
-        // Check if dream card is currently being played
+        // CRITICAL FIX: Check if there's actually a card AND if playing flag is set
+        // If the slot is empty, always render empty slot regardless of playing flag
+        if (!dm.hasCardInSlot()) {
+            // Force reset the playing flag if slot is empty
+            if (DreamAutoPlayPatch.isPlaying()) {
+                System.err.println("WARNING: isPlaying flag was true but slot is empty! Resetting...");
+                DreamAutoPlayPatch.setPlaying(false);
+            }
+            renderEmptySlot(sb);
+            return;
+        }
+
+        // Now we know there IS a card in the slot
         if (DreamAutoPlayPatch.isPlaying()) {
             renderPlayingEffect(sb);
-        } else if (dm.hasCardInSlot()) {
-            renderCardInSlot(sb, dm);
         } else {
-            renderEmptySlot(sb);
+            renderCardInSlot(sb, dm);
         }
     }
 

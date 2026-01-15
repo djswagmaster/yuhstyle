@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.vfx.combat.FlashAtkImgEffect;
 import yourmod.dream.DreamManager;
 import yourmod.dream.DreamSlotRenderer;
 import yourmod.tags.CustomTags;
+import yourmod.ui.DreamSlotPanel;
 
 public class DreamAction extends AbstractGameAction {
     private static final String TEXT = "Dream of...";
@@ -67,36 +68,54 @@ public class DreamAction extends AbstractGameAction {
 
             // Only process if cards were actually selected
             if (AbstractDungeon.handCardSelectScreen.selectedCards.size() > 0) {
-                for (AbstractCard card : AbstractDungeon.handCardSelectScreen.selectedCards.group) {
-                    // Only inspire if it's valid and not a Dream card
-                    if (!card.hasTag(CustomTags.DREAMER_CARD) && DreamManager.getInstance().canInspire(card)) {
-                        // Check if there's already a card in the dream slot
-                        if (DreamManager.getInstance().hasCardInSlot()) {
-                            // Return the existing dream card to hand (actual card, not a copy!)
-                            DreamManager.getInstance().returnCardToHand();
+                AbstractCard selectedCard = AbstractDungeon.handCardSelectScreen.selectedCards.group.get(0);
+
+                // Only inspire if it's valid and not a Dream card
+                if (!selectedCard.hasTag(CustomTags.DREAMER_CARD) && DreamManager.getInstance().canInspire(selectedCard)) {
+                    // CRITICAL FIX: Clear the slot COMPLETELY before adding new card
+                    if (DreamManager.getInstance().hasCardInSlot()) {
+                        // Get and remove old card SYNCHRONOUSLY and COMPLETELY
+                        AbstractCard oldCard = DreamManager.getInstance().getCardInSlot();
+
+                        // First, remove from dream pile completely
+                        DreamSlotPanel.dreamPile.removeCard(oldCard);
+
+                        // Reset the old card's state
+                        DreamSlotPanel.resetCardVisuals(oldCard);
+                        oldCard.resetAttributes();
+                        oldCard.applyPowers();
+
+                        // Add old card back to hand or discard
+                        if (AbstractDungeon.player.hand.size() < 10) {
+                            AbstractDungeon.player.hand.addToTop(oldCard);
+                        } else {
+                            AbstractDungeon.player.discardPile.addToTop(oldCard);
                         }
 
-                        // Play dreamy SFX
-                        CardCrawlGame.sound.play("POWER_FLIGHT", 0.2f);
-                        CardCrawlGame.sound.play("ORB_SLOT_GAIN", 0.3f);
-
-                        // VFX at card location
-                        AbstractDungeon.effectsQueue.add(new ExhaustCardEffect(card));
-
-                        // VFX at dream slot
-                        AbstractDungeon.effectsQueue.add(new FlashAtkImgEffect(
-                                DreamSlotRenderer.getSlotX(),
-                                DreamSlotRenderer.getSlotY(),
-                                AttackEffect.NONE
-                        ));
-
-                        // The card is already removed from hand by the select screen
-                        // Just inspire it (stores reference)
-                        DreamManager.getInstance().inspireCard(card);
-                    } else {
-                        // Invalid card - return it to hand
-                        AbstractDungeon.player.hand.addToTop(card);
+                        // Reset dream manager state
+                        DreamManager.getInstance().resetSlotState();
                     }
+
+                    // Play dreamy SFX
+                    CardCrawlGame.sound.play("POWER_FLIGHT", 0.2f);
+                    CardCrawlGame.sound.play("ORB_SLOT_GAIN", 0.3f);
+
+                    // VFX at card location
+                    AbstractDungeon.effectsQueue.add(new ExhaustCardEffect(selectedCard));
+
+                    // VFX at dream slot
+                    AbstractDungeon.effectsQueue.add(new FlashAtkImgEffect(
+                            DreamSlotRenderer.getSlotX(),
+                            DreamSlotRenderer.getSlotY(),
+                            AttackEffect.NONE
+                    ));
+
+                    // The card is already removed from hand by the select screen
+                    // Now inspire it (stores reference)
+                    DreamManager.getInstance().inspireCard(selectedCard);
+                } else {
+                    // Invalid card - return it to hand
+                    AbstractDungeon.player.hand.addToTop(selectedCard);
                 }
             }
 

@@ -12,6 +12,7 @@ import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.localization.OrbStrings;
@@ -20,17 +21,22 @@ import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.StanceStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.relics.ChemicalX;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
+import yourmod.actions.MaterializeAction;
 import yourmod.cards.AbstractEasyCard;
 import yourmod.cards.cardvars.AbstractEasyDynamicVariable;
 import yourmod.dream.DreamManager;
 import yourmod.potions.AbstractEasyPotion;
 import yourmod.relics.AbstractEasyRelic;
+import yourmod.relics.DreamAccelerator;
 import yourmod.util.KeywordInfo;
 import yourmod.util.ProAudio;
 import java.nio.charset.StandardCharsets;
 
 import static com.megacrit.cardcrawl.helpers.GameDictionary.keywords;
+import static yourmod.util.Wiz.atb;
+import static yourmod.util.Wiz.att;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @SpireInitializer
@@ -195,7 +201,16 @@ public class ModFile implements
 
     @Override
     public void receiveOnPlayerTurnStart() {
-        DreamManager.getInstance().passiveManifest();
+        // Add passive manifest as an action to top of queue
+        // This ensures it happens reliably at start of turn
+        if (DreamManager.getInstance().hasCardInSlot()) {
+            if (AbstractDungeon.player.hasRelic(DreamAccelerator.ID)){
+                atb(new MaterializeAction(2));
+            }
+            else {
+                atb(new MaterializeAction(1));
+            }
+        }
     }
 
     @Override

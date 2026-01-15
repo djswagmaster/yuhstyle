@@ -1,9 +1,54 @@
 {
-  "${ModID}:DreamerItem": {
-    "NAME": "Dreamer Item",
-    "FLAVOR": "DREAMER: make this a sweet relic.",
+  "dreamermod:DreamerItem": {
+    "NAME": "Dreamer's Token",
+    "FLAVOR": "A reminder of the world beyond waking.",
     "DESCRIPTIONS": [
-      "At the start of each combat, draw 1 additional card and Dream."
+      "At the start of each combat, draw #b1 additional card and #yDream."
+    ]
+  },
+  "dreamermod:PermanenceCharm": {
+    "NAME": "Permanence Charm",
+    "FLAVOR": "A crystallized moment in time.",
+    "DESCRIPTIONS": [
+      "At the start of each combat, gain ",
+      " #yPermanence."
+    ]
+  },
+  "dreamermod:DreamAccelerator": {
+    "NAME": "Dream Accelerator",
+    "FLAVOR": "Time moves differently in dreams.",
+    "DESCRIPTIONS": [
+      "#yManifest #b2 at the start of each turn instead of #b1."
+    ]
+  },
+  "dreamermod:NightmareBell": {
+    "NAME": "Nightmare Bell",
+    "FLAVOR": "Its toll echoes through sleeping minds.",
+    "DESCRIPTIONS": [
+      "At the start of each combat, apply ",
+      " #yFatigue to ALL enemies."
+    ]
+  },
+  "dreamermod:ModifierArmor": {
+    "NAME": "Adaptive Plating",
+    "FLAVOR": "It shifts and changes with your thoughts.",
+    "DESCRIPTIONS": [
+      "Whenever you play a card with a modifier, gain ",
+      " #yBlock."
+    ]
+  },
+  "dreamermod:VividDreamsOrb": {
+    "NAME": "Vivid Dreams",
+    "FLAVOR": "Reality becomes more... flexible.",
+    "DESCRIPTIONS": [
+      "Gain [E] at the start of each turn. ALL #yDream costs are increased by #b1."
+    ]
+  },
+  "dreamermod:LucidStarter": {
+    "NAME": "Lucid Focus",
+    "FLAVOR": "The key to controlling your dreams.",
+    "DESCRIPTIONS": [
+      "At the start of each turn, #yDream."
     ]
   }
 }
